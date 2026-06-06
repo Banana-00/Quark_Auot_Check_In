@@ -187,3 +187,9 @@ if __name__ == "__main__":
     print("----------夸克网盘开始签到----------")
     main()
     print("----------夸克网盘签到完毕----------")
+    - name: Server酱微信推送通知
+  uses: easychen/github-action-server-chan@v1.0.0
+  with:
+    sendkey: ${{ secrets.SERVER_SCKEY }}
+    title: "✅任务执行完成"
+    desp: "仓库：${{ github.repository }}\n触发分支：${{ github.ref_name }}\n执行时间：${{ github.date }}"

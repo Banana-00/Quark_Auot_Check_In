@@ -8,7 +8,23 @@ cookie_list = os.getenv("COOKIE_QUARK").split('\n|&&')
 # 替代 notify 功能
 def send(title, message):
     print(f"{title}: {message}")
-
+# 添加 Server酱 推送函数
+def send_to_server(title, desp):
+    server_key = os.getenv("SERVER_SCKEY")
+    url = f"https://sctapi.ftqq.com/{server_key}.send"
+    data = {
+        "title": title,
+        "desp": desp
+    }
+    try:
+        response = requests.post(url, data=data)
+        if response.status_code == 200:
+            print("Server酱推送成功")
+        else:
+            print(f"Server酱推送失败：{response.text}")
+    except Exception as e:
+        print(f"Server酱推送异常：{str(e)}")
+        
 # 获取环境变量 
 def get_env(): 
     # 判断 COOKIE_QUARK是否存在于环境变量 

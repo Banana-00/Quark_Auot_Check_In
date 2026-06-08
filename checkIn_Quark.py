@@ -1,44 +1,45 @@
-import os
-import re
-import sys
-import requests
+import os 
+import re 
+import sys 
+import requests 
 
 cookie_list = os.getenv("COOKIE_QUARK").split('\n|&&')
 
-# ===================== 改这里：接入 Server 酱 =====================
 def send(title, message):
-    print(f"{title}: {message}")
-    # 从环境变量读取 Server 酱 SendKey
-    sckey = os.getenv("SERVER_SENDKEY", "").strip()
-    if not sckey:
-        print("[Server酱] 未配置 SERVER_SENDKEY，跳过推送")
+    # 本地日志，方便在 Actions 运行记录里查看
+    print(f"{title}:\n{message}")
+
+    # 从环境变量读取 Server酱 的 SendKey
+    sendkey = os.getenv("SENDKEY")
+    if not sendkey:
+        print("未设置 SENDKEY，跳过微信推送")
         return
-    url = f"https://sctapi.ftqq.com/{sckey}.send"
+
+    url = f"https://sctapi.ftqq.com/{sendkey}.send"
     data = {
         "title": title,
         "desp": message
     }
     try:
-        res = requests.post(url, data=data, timeout=10)
-        print("[Server酱] 推送结果：", res.json())
+        resp = requests.post(url, data=data, timeout=10)
+        result = resp.json()
+        print("Server酱推送结果:", result)
     except Exception as e:
-        print(f"[Server酱] 推送失败：{e}")
-# ====================================================================
+        print("Server酱推送失败:", e)
+# 获取环境变量 
+def get_env(): 
+    # 判断 COOKIE_QUARK是否存在于环境变量 
+    if "COOKIE_QUARK" in os.environ: 
+        # 读取系统变量以 \n 或 && 分割变量 
+        cookie_list = re.split('\n|&&', os.environ.get('COOKIE_QUARK')) 
+    else: 
+        # 标准日志输出 
+        print('❌未添加COOKIE_QUARK变量') 
+        send('夸克自动签到', '❌未添加COOKIE_QUARK变量') 
+        # 脚本退出 
+        sys.exit(0) 
 
-# 获取环境变量
-def get_env():
-    # 判断 COOKIE_QUARK是否存在于环境变量
-    if "COOKIE_QUARK" in os.environ:
-        # 读取系统变量以 \n 或 && 分割变量
-        cookie_list = re.split('\n|&&', os.environ.get('COOKIE_QUARK'))
-    else:
-        # 标准日志输出
-        print('❌未添加COOKIE_QUARK变量')
-        send('夸克自动签到', '❌未添加COOKIE_QUARK变量')
-        # 脚本退出
-        sys.exit(0)
-
-    return cookie_list
+    return cookie_list 
 
 # 其他代码...
 

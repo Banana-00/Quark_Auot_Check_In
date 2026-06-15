@@ -2,7 +2,7 @@ name: Quark签到
 
 on:
   schedule:
-    - cron: '0 1 * * *'   # UTC 1:00 = 北京时间 09:00
+    - cron: '0 13 * * *'   # UTC 1:00 = 北京时间 09:00
     - cron: '0 5 * * *'   # UTC 5:00 = 北京时间 13:00
   workflow_dispatch:      # 允许手动触发
 
@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: 随机延迟（早上）
-        if: github.event.schedule == '0 1 * * *'
+        if: github.event.schedule == '0 13 * * *'
         run: |
           delay=$((RANDOM % 60))
           echo "早上签到，延迟 $delay 秒后开始.."
